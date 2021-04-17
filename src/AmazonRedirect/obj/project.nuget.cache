@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "8w++ro8z5LX4l5HItyX8TxSqJLlmr/iir+6qxGSWH2/1F2SxtabzmSMZnJeInbMHTbZHTzYmgd+Lb+VWlP/lUw==",
+  "success": true,
+  "projectFilePath": "/mnt/e/AmazonRedirect/src/AmazonRedirect/AmazonRedirect.csproj",
+  "expectedPackageFiles": [
+    "/home/hugh/.nuget/packages/amazon.lambda.apigatewayevents/2.4.0/amazon.lambda.apigatewayevents.2.4.0.nupkg.sha512",
+    "/home/hugh/.nuget/packages/amazon.lambda.core/1.2.0/amazon.lambda.core.1.2.0.nupkg.sha512",
+    "/home/hugh/.nuget/packages/amazon.lambda.serialization.systemtextjson/2.1.0/amazon.lambda.serialization.systemtextjson.2.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}
