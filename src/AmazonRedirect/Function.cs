@@ -19,7 +19,7 @@ namespace AmazonRedirect
 			                                                          "SA", "NL", "PL", "SE", "AU", "BR", "MX", "TR"};
 		private static readonly string[] comCountries = new[] {"AU", "BR", "MX", "TR", "US"};
 
-		private static readonly string[] supportedASINs = new[] {"B08ZBT27WR", "B08ZDFPG1B", "B091M7JTYG"};
+		private static readonly string[] supportedASINs = new[] {"/dp/B08ZBT27WR", "/dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
 		
 		public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
 		{
@@ -29,12 +29,10 @@ namespace AmazonRedirect
 			
 			if (string.IsNullOrWhiteSpace(path) || !supportedASINs.Any(path.Contains))
 			{
-
-				return new APIGatewayProxyResponse {StatusCode = 403, Body = "PC LOAD LETTER"};
+				location = "https://github.com/HughPH/AmazonRedirect";
 			}
 			else
 			{
-
 				string tld = ".com";
 
 				if (request.Headers.ContainsKey("cloudfront-viewer-country"))
