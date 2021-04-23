@@ -19,7 +19,16 @@ namespace AmazonRedirect
 			                                                          "SA", "NL", "PL", "SE", "AU", "BR", "MX", "TR"};
 		private static readonly string[] comCountries = new[] {"AU", "BR", "MX", "TR", "US"};
 
-		private static readonly string[] supportedASINs = new[] {"/dp/B08ZBT27WR", "/dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
+		private static readonly string[] supportedASINs = new[] {"dp/B08ZBT27WR", "dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
+
+		private static readonly Dictionary<string, Tuple<string, string>> redirections = new Dictionary<string, Tuple<string, string>>
+		                                                                 {
+			                                                                 {"AE", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
+			                                                                 {"SG", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
+			                                                                 {"TR", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
+			                                                                 {"PL", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
+			                                                                 {"SE", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
+		                                                                 };
 		
 		public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
 		{
@@ -41,6 +50,8 @@ namespace AmazonRedirect
 					if (Array.IndexOf(comCountries, countryCode) == -1) tld = "";
 					if (Array.IndexOf(toLowerCountries, countryCode) >= 0) tld += $".{countryCode.ToLower()}";
 					if (countryCode == "GB") tld = ".co.uk"; // always got to be the special case
+
+					if (redirections.ContainsKey(countryCode) && path == redirections[countryCode].Item1) path = redirections[countryCode].Item2;
 				}
 
 				if (tld == "") tld = ".com";
