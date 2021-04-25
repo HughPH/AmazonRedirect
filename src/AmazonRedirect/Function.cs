@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
@@ -38,7 +39,7 @@ namespace AmazonRedirect
 			
 			if (string.IsNullOrWhiteSpace(path) || !supportedASINs.Any(path.Contains))
 			{
-				location = "https://github.com/HughPH/AmazonRedirect";
+				location = $"https://github.com/HughPH/AmazonRedirect";
 			}
 			else
 			{
