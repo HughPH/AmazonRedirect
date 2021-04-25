@@ -22,14 +22,14 @@ namespace AmazonRedirect
 
 		private static readonly string[] supportedASINs = new[] {"dp/B08ZBT27WR", "dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
 
-		private static readonly Dictionary<string, Tuple<string, string>> redirections = new Dictionary<string, Tuple<string, string>>
-		                                                                 {
-			                                                                 {"AE", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
-			                                                                 {"SG", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
-			                                                                 {"TR", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
-			                                                                 {"PL", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
-			                                                                 {"SE", new Tuple<string, string>(supportedASINs[0], supportedASINs[1])},
-		                                                                 };
+		private static readonly Dictionary<string, (int, int)>  redirections = new Dictionary<string, (int, int)>
+		                                                                      {
+			                                                                             {"AE", (0, 1)},
+			                                                                             {"SG", (0, 1)},
+			                                                                             {"TR", (0, 1)},
+			                                                                             {"PL", (0, 1)},
+			                                                                             {"SE", (0, 1)},
+		                                                                             };
 		
 		public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
 		{
@@ -52,7 +52,7 @@ namespace AmazonRedirect
 					if (Array.IndexOf(toLowerCountries, countryCode) >= 0) tld += $".{countryCode.ToLower()}";
 					if (countryCode == "GB") tld = ".co.uk"; // always got to be the special case
 
-					if (redirections.ContainsKey(countryCode) && path == redirections[countryCode].Item1) path = redirections[countryCode].Item2;
+					if (redirections.ContainsKey(countryCode) && path == supportedASINs[redirections[countryCode].Item1]) path = supportedASINs[redirections[countryCode].Item2];
 				}
 
 				if (tld == "") tld = ".com";
