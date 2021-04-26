@@ -30,4 +30,4 @@ To use this code:
 	4. Click the "Create" button at the bottom of the page.
 9. Now you can use the domain name given to your cloudfront distribution (mine is `d2dp4n505tea78.cloudfront.net` for example) or get an SSL certificate and set up your own CNAME. I won't go into the fine detail of all that here, if you know how to do it, go do it, otherwise there's plenty of documentation online and every registrar is different, so I don't want a thousand bug reports because I don't know how your registrar works.
 
-Of course you can add anything you like, such as logging requests to an S3 bucket, and adding headers to help you see which of your campaigns are performing better.
+Of course you can add anything you like, such as logging requests to an S3 bucket, and adding parameters to help you see which of your campaigns are performing better.
