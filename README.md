@@ -11,7 +11,7 @@ By using AWS CloudFront, we can instead determine the user's (most likely) local
 If you want to use an Amazon Redirector like this, please make your own, with your own ASINs. Lambda functions aren't free, and while this doesn't cost me anything for the clicks I get, I might find myself with a big bill if everyone started using it.
 
 To use this code:
-1. Make sure you have the Amazon Lambda Templates: `dotnet new --install Amazon.Lambda.Templates::5.2.0`
+1. (Probably not necessary) Make sure you have the Amazon Lambda Templates: `dotnet new --install Amazon.Lambda.Templates`
 2. Install Lambda global tools: `dotnet tool install -g Amazon.Lambda.Tools` or upgrade an existing installation: `dotnet tool update -g Amazon.Lambda.Tools`
 3. Make sure you have an S3 bucket for the binaries
 4. `cd src/AmazonRedirect`
