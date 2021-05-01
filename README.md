@@ -1,10 +1,12 @@
 # AmazonRedirect
 
-You may have been redirected here from az.sub-etha.link.
+You may have been redirected here from az.sub-etha.link. If you don't know how you got here, check out my novel, Rebellion's Martyr: https://az.sub-etha.link/dp/B08ZBT27WR
 
-This AWS Lambda code redirects the browser to the best available Amazon site (or just to .com if no best can be determined) based on the user's location - which is determined by the cloudfront edge location they connect to. This will generally be accurate, obviates the need for IP Geolocation and works with IPv6.
+Amazon do not have a means of redirecting customers to their local Amazon site automatically. That's good for the very niche use case of buying something in another country to send to someone in that country. And it's good for sellers to be able to see their products appearing as desired in other countries. But if I want people to be able to buy without having to take extra steps to get to the right Amazon site, I either need to run separate ads for each country, or find a way to redirect customers based on where they are.
 
-If you don't know how you got here, check out my novel, Rebellion's Martyr: https://az.sub-etha.link/dp/B08ZBT27WR
+This AWS Lambda code redirects the browser to the best available Amazon site (or just to .com if no best can be determined) based on the user's location. Often this is done with an IP Geolocation Database, but that means you need to have a file, which could contain errors, and you need to keep it up-to-date. The further issue is that since IPv6 is a much larger address space, such a file could grow significantly and have significantly more errors.
+
+By using AWS CloudFront, we can instead determine the user's (most likely) local Amazon site by the CloudFront edge location they connect to. This will generally be accurate, obviates the need for IP Geolocation and works with IPv6. Whether it works properly with StarLink remains to be seen. In this circumstance we don't need to analyse ANY information about the user or their device or environment, not even their IP address. We only use information gleaned from best path routing.
 
 If you want to use an Amazon Redirector like this, please make your own, with your own ASINs. Lambda functions aren't free, and while this doesn't cost me anything for the clicks I get, I might find myself with a big bill if everyone started using it.
 
