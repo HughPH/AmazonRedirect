@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Mime;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
 
@@ -16,49 +12,63 @@ namespace AmazonRedirect
 {
 	public class Functions
 	{
-		private static readonly string[] toLowerCountries = new[] {"DE", "FR", "ES", "IT", "JP", "CA", "CN", "IN", "SG", "AE",
-			                                                          "SA", "NL", "PL", "SE", "AU", "BR", "MX", "TR"};
-		private static readonly string[] comCountries = new[] {"AU", "BR", "MX", "TR", "US"};
+		private static readonly string[] ToLowerCountries = new[]
+		                                                    {
+			                                                    "DE", "FR", "ES", "IT", "JP", "CA", "CN", "IN", "SG", "AE",
+			                                                    "SA", "NL", "PL", "SE", "AU", "BR", "MX", "TR"
+		                                                    };
 
-		private static readonly string[] supportedASINs = new[] {"dp/B08ZBT27WR", "dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
+		private static readonly string[] ComCountries = new[] {"AU", "BR", "MX", "TR", "US"};
 
-		private static readonly Dictionary<string, (int, int)>  redirections = new Dictionary<string, (int, int)>
+		private static readonly string[] SupportedASINs = new[] {"dp/B08ZBT27WR", "dp/B09483MB61", "dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
+
+		private static readonly Dictionary<(string, int), int> Redirections = new Dictionary<(string, int), int>
 		                                                                      {
-			                                                                             {"AE", (0, 1)},
-			                                                                             {"SG", (0, 1)},
-			                                                                             {"TR", (0, 1)},
-			                                                                             {"PL", (0, 1)},
-			                                                                             {"SE", (0, 1)},
-		                                                                             };
-		
+			                                                                      {("AE", 0), 1},
+			                                                                      {("SG", 0), 1},
+			                                                                      {("TR", 0), 1},
+			                                                                      {("PL", 0), 1},
+			                                                                      {("SE", 0), 1},
+			                                                                      {("**", 2), 1},
+		                                                                      };
+
 		public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
 		{
 			string path = request.PathParameters.ContainsKey("path") ? request.PathParameters["path"] : "";
+			string asin = string.IsNullOrWhiteSpace(path) ? null : SupportedASINs.FirstOrDefault(path.Contains);
 
 			string location;
-			
-			if (string.IsNullOrWhiteSpace(path) || !supportedASINs.Any(path.Contains))
+
+			if (asin == null)
 			{
 				location = $"https://github.com/HughPH/AmazonRedirect";
 			}
 			else
 			{
-				string tld = ".com";
+				string tld = "";
 
 				if (request.Headers.ContainsKey("cloudfront-viewer-country"))
 				{
 					string countryCode = request.Headers["cloudfront-viewer-country"];
-					if (Array.IndexOf(comCountries, countryCode) == -1) tld = "";
-					if (Array.IndexOf(toLowerCountries, countryCode) >= 0) tld += $".{countryCode.ToLower()}";
+					if (ComCountries.Contains(countryCode)) tld = ".com";
+					if (ToLowerCountries.Contains(countryCode)) tld += $".{countryCode.ToLower()}";
 					if (countryCode == "GB") tld = ".co.uk"; // always got to be the special case
 
-					if (redirections.ContainsKey(countryCode) && path == supportedASINs[redirections[countryCode].Item1]) path = supportedASINs[redirections[countryCode].Item2];
+					var key = (countryCode, Array.IndexOf(SupportedASINs, asin));
+
+					if (Redirections.ContainsKey(key))
+						path = SupportedASINs[Redirections[key]];
+
+					var key2 = ("**", key.Item2);
+					if (Redirections.ContainsKey(key2))
+						path = SupportedASINs[Redirections[key2]];
 				}
 
 				if (tld == "") tld = ".com";
+				
 				location = $"https://amazon{tld}/{path}";
 			}
-			
+
 			return new APIGatewayProxyResponse
 			       {
 				       StatusCode = (int) HttpStatusCode.Found,
