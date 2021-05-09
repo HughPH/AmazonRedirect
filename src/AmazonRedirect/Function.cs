@@ -22,6 +22,12 @@ namespace AmazonRedirect
 
 		private static readonly string[] SupportedASINs = new[] {"dp/B08ZBT27WR", "dp/B09483MB61", "dp/B08ZDFPG1B", "Hugh-Phoenix-Hulme/e/B091M7JTYG"};
 
+		private static readonly Dictionary<string, string> Tags = new Dictionary<string, string>
+		                                                          {
+			                                                          {"GB", "hpph-21"},
+			                                                          {"US", "hpph-20"}
+		                                                          };
+		
 		private static readonly Dictionary<(string, int), int> Redirections = new Dictionary<(string, int), int>
 		                                                                      {
 			                                                                      {("AE", 0), 1},
@@ -46,7 +52,7 @@ namespace AmazonRedirect
 			else
 			{
 				string tld = "";
-
+				string tag = null;
 				if (request.Headers.ContainsKey("cloudfront-viewer-country"))
 				{
 					string countryCode = request.Headers["cloudfront-viewer-country"];
@@ -62,11 +68,16 @@ namespace AmazonRedirect
 					var key2 = ("**", key.Item2);
 					if (Redirections.ContainsKey(key2))
 						path = SupportedASINs[Redirections[key2]];
+
+					if (Tags.ContainsKey(countryCode)) tag = Tags[countryCode];
 				}
 
 				if (tld == "") tld = ".com";
 				
 				location = $"https://amazon{tld}/{path}";
+
+				if (!string.IsNullOrWhiteSpace(tag)) location += $"?tag={tag}";
+
 			}
 
 			return new APIGatewayProxyResponse
